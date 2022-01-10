@@ -8,8 +8,10 @@ import org.salahlibrary.PageComponents.RoundTrip;
 import org.salahlibrary.PageObjects.TravelHomePage;
 import org.testng.annotations.Test;
 
+import java.util.HashMap;
+
 public class FooterDemoTest {
-    By sectionElement = By.id("flightSearchContainer");
+
     @Test
     public void flightTest() {
         System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//src//main//java//org//salahlibrary//Resources//chromedriver.exe");
@@ -22,7 +24,12 @@ public class FooterDemoTest {
         System.out.println(travelHome.getNavigationBar().getFlightsAttr());
         System.out.println(travelHome.getNavigationBar().getLinksCount());
 
-        travelHome.setBookingStrategy(new RoundTrip(driver,sectionElement));
-        travelHome.checkAvail("MAA","HYD");
+        HashMap<String, String> reservationDestinations = new HashMap<String, String>();
+        reservationDestinations.put("origin", "MAA");
+        reservationDestinations.put("destination", "HYD");
+        reservationDestinations.put("destination2", "HYD");
+
+        travelHome.setBookingStrategy("multiTrip");
+        travelHome.checkAvail(reservationDestinations);
     }
 }
