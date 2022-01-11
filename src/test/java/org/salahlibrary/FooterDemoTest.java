@@ -6,30 +6,50 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.salahlibrary.PageComponents.MultiTrip;
 import org.salahlibrary.PageComponents.RoundTrip;
 import org.salahlibrary.PageObjects.TravelHomePage;
+import org.salahlibrary.testData.jsonReader;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class FooterDemoTest {
+public class FooterDemoTest extends Base {
+    WebDriver driver;
+    TravelHomePage travelHome;
 
-    @Test
-    public void flightTest() {
-        System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "//src//main//java//org//salahlibrary//Resources//chromedriver.exe");
-        WebDriver driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        TravelHomePage travelHome = new TravelHomePage(driver);
+    @BeforeTest
+    public void setup() {
+        driver = initialize();
+        travelHome = new TravelHomePage(driver);
+    }
+
+    @Test(dataProvider = "getData")
+    public void flightTest(HashMap<String, String> reservationDestinations) {
+
+
         travelHome.goTo();
         System.out.println(travelHome.getFooterBar().getFlightsAttr());
         System.out.println(travelHome.getFooterBar().getLinksCount());
         System.out.println(travelHome.getNavigationBar().getFlightsAttr());
         System.out.println(travelHome.getNavigationBar().getLinksCount());
 
-        HashMap<String, String> reservationDestinations = new HashMap<String, String>();
-        reservationDestinations.put("origin", "MAA");
-        reservationDestinations.put("destination", "HYD");
-        reservationDestinations.put("destination2", "HYD");
 
         travelHome.setBookingStrategy("multiTrip");
         travelHome.checkAvail(reservationDestinations);
+    }
+
+    @DataProvider
+    public Object[][] getData() throws IOException {
+
+
+        List<HashMap<String, String>> dataList = new ArrayList();
+       jsonReader jr = new jsonReader();
+        dataList =  jr.getJsonData(System.getProperty("user.dir") + "//src//main//java//org//salahlibrary//testData//reservationTestData.json");
+        return new Object[][]{
+                {dataList.get(0)},{dataList.get(1)}
+        };
     }
 }
